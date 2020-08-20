@@ -138,7 +138,7 @@ const NaversList = ({ authorizationToken }) => {
 
     const getNaverById = (id) => {
 
-        fetch(`https://navedex-api.herokuapp.com/v1/navers/${id}`, {
+        return fetch(`https://navedex-api.herokuapp.com/v1/navers/${id}`, {
             headers: {
                 'content-type': 'application/json',
                 Authorization: `Bearer ${authorizationToken}`,
@@ -150,15 +150,15 @@ const NaversList = ({ authorizationToken }) => {
             return res.json();
           })
           .then(resData => {
-            console.log(resData);
+            return resData;
           })
           .catch(err => console.log(err));
     };
 
     const closeNaverModalHandler = () => setModalNaver(null);
 
-    const openNaverModalHandler = (id) => {
-        const selectedNaver = navers.filter(naver => naver.id === id)[0];
+    const openNaverModalHandler = async (id) => {
+        const selectedNaver = await getNaverById(id);
 
         console.log(selectedNaver);
 
