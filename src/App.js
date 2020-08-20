@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 
@@ -24,6 +24,17 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [authorizationToken, setAuthorizationToken] = useState('');
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    console.log(`token: ${token}`);
+
+    if(!token) return;
+
+    setIsLoggedIn(true);
+    setAuthorizationToken(token);
+  }, [setAuthorizationToken, setIsLoggedIn]);
+
   const LoginHandler = ({ email, password }) => {
     setIsLoading(true)
 
@@ -48,16 +59,22 @@ const App = () => {
       .then(resData => {
         setAuthorizationToken(resData.token);
 
+        localStorage.setItem('token', resData.token);
         setIsLoading(false);
       })
       .catch(err => console.log(err))
+  }
+
+  const logOffHandler = () => {
+    setIsLoggedIn(false);
+    localStorage.removeItem('token');
   }
 
   return (
     <AppContainer>
       <Router>
         {(isLoggedIn && !isLoading) && 
-          <TopBar setIsLoggedIn={setIsLoggedIn}/>
+          <TopBar logOffHandler={logOffHandler}/>
         }
         <Switch>
           {(!isLoggedIn && !isLoading) &&

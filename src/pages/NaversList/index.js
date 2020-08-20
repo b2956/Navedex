@@ -6,6 +6,7 @@ import NaverThumbNail from '../../components/NaverThumbNail';
 
 const NaversList = ({ authorizationToken }) => {
     const [navers, setNavers] = useState([]);
+    const [modalnaver, setModalNaver] = useState(null);
 
     useEffect(() => {
         fetch('https://navedex-api.herokuapp.com/v1/navers', {
@@ -25,6 +26,46 @@ const NaversList = ({ authorizationToken }) => {
           })
           .catch(err => console.log(err));
     }, [authorizationToken]);
+
+    const deleteNaverHandler = (id) => {
+        fetch(`https://navedex-api.herokuapp.com/v1/navers/${id}`, {
+            headers: {
+                'content-type': 'application/json',
+                Authorization: `Bearer ${authorizationToken}`,
+            },
+            method: 'delete'
+        })
+          .then(res => {
+            console.log(res);
+            if(res.status === 200) {
+                setNavers(prevNavers => prevNavers.filter(naver => naver.id !== id))
+            } 
+            return res.json();
+          })
+          .then(resData => {
+            console.log(resData);
+          })
+          .catch(err => console.log(err));
+    }
+
+    const getNaverById = (id) => {
+
+        fetch(`https://navedex-api.herokuapp.com/v1/navers/${id}`, {
+            headers: {
+                'content-type': 'application/json',
+                Authorization: `Bearer ${authorizationToken}`,
+            },
+            method: 'get'
+        })
+          .then(res => {
+            console.log(res);
+            return res.json();
+          })
+          .then(resData => {
+            console.log(resData);
+          })
+          .catch(err => console.log(err));
+    }
 
 
     const NaversListWrapper = styled.div`
@@ -49,13 +90,16 @@ const NaversList = ({ authorizationToken }) => {
             <AddNaverBar/>
             <Navers>
                 { navers.length > 0 &&
-                    navers.map(naver => {
+                    navers.map((naver, index) => {
                         return (
                             <NaverThumbNail 
-                                id={naver.user_id}
+                                id={naver.id}
                                 name={naver.name}
                                 pictureUrl={naver.url}
                                 position={naver.job_role}
+                                key={index}
+                                deleteNaverHandler={deleteNaverHandler}
+                                getNaverDetails={getNaverById}
                             />
                         )
                     })

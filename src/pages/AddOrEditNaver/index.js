@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useParams , Redirect } from 'react-router-dom';
 
 import InputElement from '../../components/InputElement';
 import Button from '../../components/Button';
@@ -67,7 +67,7 @@ const SaveButtonWrapper = styled.div`
     transform: translateX(-${ 32 * window.innerWidth / 1280 }px);
 `;
 
-const AddOrEditNaver = ({ isEditing, authorizationToken }) => {
+const AddOrEditNaver = ({ isEditing, authorizationToken }) => {    
     const [naverData, setNaverData] = useState({
         name: '',
         birthdate: '',
@@ -76,6 +76,45 @@ const AddOrEditNaver = ({ isEditing, authorizationToken }) => {
         admission_date: '',
         url: ''
     });
+
+    const { id: naverId } = useParams();
+
+    useEffect(() => {
+        if (!isEditing) return;
+
+        console.log(naverId);
+
+        fetch(`https://navedex-api.herokuapp.com/v1/navers/${naverId}`, {
+            headers: {
+                'content-type': 'application/json',
+                Authorization: `Bearer ${authorizationToken}`,
+            },
+            method: 'get'
+        })
+          .then(res => {
+            return res.json();
+          })
+          .then(resData => {
+            console.log(resData);
+
+            const birthdate = resData.birthdate.replace('T00', 'T05');
+            
+            const admission_date = resData.admission_date.replace('T00', 'T05');
+
+            console.log(birthdate);
+            
+            setNaverData({
+                name: resData.name,
+                birthdate: new Date(birthdate).toLocaleDateString(),
+                project: resData.project,
+                job_role: resData.job_role,
+                admission_date: new Date(admission_date).toLocaleDateString(),
+                url: resData.url
+            })
+          })
+          .catch(err => console.log(err));
+
+    }, [authorizationToken, isEditing, naverId]);
 
     const addNewNaver = () => {
 
@@ -93,12 +132,43 @@ const AddOrEditNaver = ({ isEditing, authorizationToken }) => {
         })
           .then(res => {
             console.log(res);
+            if(res.status === 200) {
+                window.location.href = window.location.href.replace('add-naver', 'navers-list');
+            }
             return res.json();
           })
           .then(resData => {
             console.log(resData);
           })
           .catch(err => console.log(err))
+    }
+
+    const updateNaver = () => {
+
+        const requestBody = {
+            ...naverData
+        }
+      
+        fetch(`https://navedex-api.herokuapp.com/v1/navers/${naverId}`, {
+          method: 'put',
+          headers: {
+            'content-type': 'application/json',
+            Authorization: `Bearer ${authorizationToken}`,
+          },
+          body: JSON.stringify(requestBody)
+        })
+          .then(res => {
+            console.log(res);
+            if(res.status === 200) {
+                window.location.href = window.location.href.replace('add-naver', 'navers-list');
+            }
+            return res.json();
+          })
+          .then(resData => {
+            console.log(resData);
+          })
+          .catch(err => console.log(err))
+
     }
     
 
@@ -166,7 +236,7 @@ const AddOrEditNaver = ({ isEditing, authorizationToken }) => {
                     </InputColumn>
                 </FormInput>
                 <SaveButtonWrapper>
-                    <Button isFull={true} text='Salvar' onClickEffect={!isEditing ? addNewNaver : ()=>{}} />
+                    <Button isFull={true} text='Salvar' onClickEffect={!isEditing ? addNewNaver : updateNaver} />
                 </SaveButtonWrapper>
             </FormWrap>
         </Wrapper>

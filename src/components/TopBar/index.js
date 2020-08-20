@@ -39,18 +39,14 @@ const Sair = styled.h3`
 `
 
 
-const TopBar = ({ setIsLoggedIn }) => {
-
-    const LogOff = () => {
-        setIsLoggedIn(false);
-    }
+const TopBar = ({ logOffHandler }) => {
 
     return (
         <TopBarWrapper>
             <Link to='/navers-list'>
                 <Logo src={logo} />
             </Link>
-            <Sair onClick={LogOff} >Sair</Sair>
+            <Sair onClick={logOffHandler} >Sair</Sair>
         </TopBarWrapper>
     )
 };
