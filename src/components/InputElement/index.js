@@ -24,7 +24,7 @@ const Input = styled.input`
     height: 40px;
     box-sizing: border-box;
 
-    &:focus, &::selection {
+    &:focus {
         border: 2px solid #111;
         border-radius: 0;
         outline: none; 
@@ -50,7 +50,14 @@ const InputElement = ({label, name, value, type, setNewValue}) => {
     return (
         <InputWrapper>
             <Label>{label}</Label>
-            <Input htmlFor={name} placeholder={label} value={value} onChange={handleInputChange} type={type} name={name} />
+            <Input 
+                htmlFor={name} 
+                placeholder={label} 
+                value={value} 
+                onChange={handleInputChange} 
+                type={type} 
+                name={name} 
+            />
         </InputWrapper>
     )
 }

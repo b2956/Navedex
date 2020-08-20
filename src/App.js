@@ -10,7 +10,7 @@ import TopBar from './components/TopBar';
 
 const AppContainer = styled.div`
   height: 100vh;
-  width: 100%;
+  width: ${ 1280 * window.innerWidth / 1280 };
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -46,7 +46,6 @@ const App = () => {
         return res.json();
       })
       .then(resData => {
-        console.log(resData);
         setAuthorizationToken(resData.token);
 
         setIsLoading(false);
@@ -56,14 +55,14 @@ const App = () => {
 
   return (
     <AppContainer>
-      {(isLoggedIn && !isLoading) && 
-        <TopBar/>
-      }
       <Router>
+        {(isLoggedIn && !isLoading) && 
+          <TopBar setIsLoggedIn={setIsLoggedIn}/>
+        }
         <Switch>
           {(!isLoggedIn && !isLoading) &&
             <React.Fragment>
-              <Route path='/login' exact>
+              <Route exact path='/login'>
                 <Login LoginHandler={LoginHandler} />
               </Route>
               <Redirect to='/login'/>
@@ -71,15 +70,21 @@ const App = () => {
           }
           {(isLoggedIn && !isLoading) && 
             <React.Fragment>
-              <Route path='/navers-list' exact>
-                <NaversList/>
+              <Route exact path='/navers-list'>
+                <NaversList
+                  authorizationToken={authorizationToken}
+                />
               </Route>
-              <Route path='add-naver' exact>
-                <AddOrEditNaver/>
+              <Route exact path='/add-naver'>
+                <AddOrEditNaver
+                  isEditing={false}
+                  authorizationToken={authorizationToken}
+                />
               </Route>
-              <Route path='edit-naver/:id' exact>
+              <Route exact path='/edit-naver/:id'>
                 <AddOrEditNaver 
                   isEditing={true}
+                  authorizationToken={authorizationToken}
                 />
               </Route>
               <Redirect to='/navers-list'/>

@@ -38,8 +38,16 @@ const Button = ({text, isFull, onClickEffect}) => {
     let button;
 
     const useClickHandler = async (e) => {
-        console.log(e.target);
+        const targetClassList = e.target.classList[0].toString();
+        console.log(targetClassList);
+
         e.target.style.opacity = 0.7;
+        
+        setTimeout(()=> {
+            if(document.querySelector(`.${targetClassList}`)) {
+                document.querySelector(`.${targetClassList}`).style.opacity = 1;
+            } 
+        }, 200);
 
         onClickEffect();
     }

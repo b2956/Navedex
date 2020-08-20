@@ -6,8 +6,8 @@ import InputElement from '../../components/InputElement';
 import Button from '../../components/Button';
 
 const LoginWrapper = styled.div`
-    width: ${450 * (window.innerWidth / 1280)}px;
-    height: ${400 * (window.innerHeight / 720)}px;
+    width: ${window.innerWidth > 1280 ? 450 * (window.innerWidth / 1280) : 450 }px;
+    height: ${window.innerWidth > 1280 ? 400 * (window.innerWidth / 1280) : 400 }px;
     border: 1px solid #212121;
     text-align: center;
     padding: ${40 * (window.innerHeight / 720)}px ${30 * (window.innerWidth / 1280)}px;
