@@ -6,7 +6,7 @@ import Button from '../Button';
 
 const ModalWrapper = styled.div`
     background-color: #fff;
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     width: ${window.innerWidth > 1280 ? 600 * window.innerWidth / 1280 : 600 }px;
@@ -23,7 +23,7 @@ const Title = styled.h1`
     font-weight: 600;
     font-size: 24px;
     line-height: 36px;
-    margin: 32px;
+    margin: 35px;
     color: #212121;
 `
 
@@ -32,20 +32,28 @@ const Message = styled.h3`
     font-style: normal;
     font-weight: normal;
     font-size: 16px;
-    margin: 32px;
+    margin: 35px;
     line-height: 36px;
     color: #212121;
 `;
 
 const OptionsButton = styled(Button)`
-    width: ${ window.innerWidth > 1280 ? 175 * window.innerWidth / 1280 : 175 }px;
+    width: 175px;
+    margin-right: 35px;
+    margin-bottom: 35px;
 `
-
 const ButtonsWrapper = styled.div`
     width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
+    align-self: flex-end;
+    max-width: 65%;
+    margin: 35px;
+
+    & button:not(:first-of-type) {
+        margin-left: 35px;
+    }
 `
 const CloseButton = styled.img`
     width: 15px;
@@ -61,6 +69,7 @@ const CloseButton = styled.img`
 `
 
 const Modal = ({ title, message, options, closeModalHandler }) => {
+
     return ( 
         createPortal(
             <ModalWrapper>

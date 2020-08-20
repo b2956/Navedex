@@ -88,20 +88,20 @@ const DeleteIcon = styled(Icon)`
     margin-right: 20px;
 `;
 
-const NaverThumbNail = ({ pictureUrl, name, position , id, deleteNaverHandler, getNaverDetails }) => {
+const NaverThumbNail = ({ pictureUrl, name, position , id, openDeleteModalHandler, openNaverModalHandler }) => {
 
     const useDeleteNaver = () => {
-        deleteNaverHandler(id);
+        openDeleteModalHandler(id);
     }
 
-    const useGetNaverDetails = () => {
-        getNaverDetails(id);
+    const openNaverModal = () => {
+        openNaverModalHandler(id);
     }
 
     return (
         <Wrapper>
-            <NaverPictureWrap onClick={useGetNaverDetails} >
-                <NaverPicture src={require('../../assets/images/IMG_9945.png')} />
+            <NaverPictureWrap onClick={openNaverModal} >
+                <NaverPicture src={pictureUrl} />
             </NaverPictureWrap>
             <NaverDescription>
                 <NaverName>{name}</NaverName>

@@ -25,14 +25,13 @@ const ButtonWrapper = styled.button`
 const DarkButton = styled(ButtonWrapper)`
     color:  #fff;
     background-color: #212121;
-`
+`;
 
 const WhiteButton = styled(ButtonWrapper)`
     color: #212121;
+    border: 1px solid #212121;
     background-color: #fff;
-`
-
-
+`;
 
 const Button = ({text, isFull, onClickEffect}) => {
     let button;
@@ -51,7 +50,6 @@ const Button = ({text, isFull, onClickEffect}) => {
 
         onClickEffect();
     }
-
     
     isFull ? button = <DarkButton onClick={useClickHandler}>{text}</DarkButton> : button = <WhiteButton onClick={useClickHandler}>{text}</WhiteButton>
 

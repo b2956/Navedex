@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Link, useParams , Redirect } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import InputElement from '../../components/InputElement';
 import Button from '../../components/Button';
@@ -218,7 +218,6 @@ const AddOrEditNaver = ({ isEditing, authorizationToken }) => {
     const closeModalHandler = () => {
         setIsModalVisible(false);
     }
-    
 
     return (
         <React.Fragment>
