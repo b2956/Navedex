@@ -2,14 +2,20 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 
-import '../Button';
+import Button from '../Button';
 
 const ModalWrapper = styled.div`
     background-color: #fff;
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 50%;
+    left: 50%;
+    width: ${window.innerWidth > 1280 ? 600 * window.innerWidth / 1280 : 600 }px;
     transform: translate(-50%, -50%);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
 `
 const Title = styled.h1`
     font-family: Montserrat;
@@ -31,18 +37,49 @@ const Message = styled.h3`
     color: #212121;
 `;
 
-const Modal = ({ title, message, options }) => {
-    return ( createPortal('modal', 
-        <ModalWrapper>
-            <Title>{title}</Title>
-            <Message>{message}</Message>
-            { options &&
-                options.map(item => {
-                    return <Button text={item.text} isFull={item.isFull} onClickEffect={item.onClickEffect} />
-                })
-            }
-        </ModalWrapper>
-    ))
+const OptionsButton = styled(Button)`
+    width: ${ window.innerWidth > 1280 ? 175 * window.innerWidth / 1280 : 175 }px;
+`
+
+const ButtonsWrapper = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+`
+const CloseButton = styled.img`
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(-20px, 20px);
+
+    &:hover {
+        cursor: pointer;
+    }
+`
+
+const Modal = ({ title, message, options, closeModalHandler }) => {
+    return ( 
+        createPortal(
+            <ModalWrapper>
+                <CloseButton src={require('../../assets/images/closeVector.svg')} onClick={closeModalHandler} />
+                <Title>{title}</Title>
+                <Message>{message}</Message>
+                { options &&
+                    <ButtonsWrapper>
+                    { 
+                        options.map(item => {
+                            return <OptionsButton text={item.text} isFull={item.isFull} onClickEffect={item.onClickEffect} />
+                        })
+                    }
+                    </ButtonsWrapper>
+                }
+            </ModalWrapper>, 
+            document.getElementById('modal')
+        )
+    )
 }
 
 export default Modal;

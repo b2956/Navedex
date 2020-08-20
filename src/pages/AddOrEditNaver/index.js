@@ -5,6 +5,8 @@ import { Link, useParams , Redirect } from 'react-router-dom';
 import InputElement from '../../components/InputElement';
 import Button from '../../components/Button';
 import arrowIcon from '../../assets/images/Arrow-Icon.svg';
+import Modal from '../../components/Modal';
+import BackDrop from '../../components/Backdrop';
 
 const Wrapper = styled.div`
     flex: 1;
@@ -77,6 +79,32 @@ const AddOrEditNaver = ({ isEditing, authorizationToken }) => {
         url: ''
     });
 
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const [modalProps, setModalProps] = useState({
+        title: '',
+        message: '',
+        options: null
+    });
+
+    const successAddModalProps = {
+        title: 'Naver Criado',
+        message: 'Naver criado com sucesso',
+        options: null
+    };
+
+    const successUpdateModalProps = {
+        title: 'Naver Atualizado',
+        message: 'Naver atualizado com sucesso',
+        options: null
+    };
+
+    const failureModalProps = {
+        title: 'Operação Falhou',
+        message: 'A operação não foi concluída com sucesso, tente novamente',
+        options: null
+    };
+
     const { id: naverId } = useParams();
 
     useEffect(() => {
@@ -133,7 +161,19 @@ const AddOrEditNaver = ({ isEditing, authorizationToken }) => {
           .then(res => {
             console.log(res);
             if(res.status === 200) {
-                window.location.href = window.location.href.replace('add-naver', 'navers-list');
+                setNaverData({
+                    name: '',
+                    birthdate: '',
+                    project: '',
+                    job_role: '',
+                    admission_date: '',
+                    url: ''
+                });
+                setModalProps(successAddModalProps);
+                setIsModalVisible(true);
+            } else {
+                setModalProps(failureModalProps);
+                setIsModalVisible(true);
             }
             return res.json();
           })
@@ -160,7 +200,11 @@ const AddOrEditNaver = ({ isEditing, authorizationToken }) => {
           .then(res => {
             console.log(res);
             if(res.status === 200) {
-                window.location.href = window.location.href.replace('add-naver', 'navers-list');
+                setModalProps(successUpdateModalProps);
+                setIsModalVisible(true);
+            } else {
+                setModalProps(failureModalProps);
+                setIsModalVisible(true);
             }
             return res.json();
           })
@@ -170,76 +214,88 @@ const AddOrEditNaver = ({ isEditing, authorizationToken }) => {
           .catch(err => console.log(err))
 
     }
+
+    const closeModalHandler = () => {
+        setIsModalVisible(false);
+    }
     
 
     return (
-        <Wrapper>
-            <SectionHeader>
-                <Link to='/navers-list' >
-                    <BackLink src={arrowIcon} />
-                </Link>
-                <SectionTitle>{!isEditing ? 'Adicionar Naver' : 'Editar Naver' }</SectionTitle>
-            </SectionHeader>
-            <FormWrap>
-                <FormInput>
-                    <InputColumn>
-                        <InputElement 
-                            label='Nome'
-                            name='name'
-                            setNewValue={setNaverData} 
-                            type ='text'
-                            value={naverData.name}
-                            key='1'
-                        />
-                        <InputElement 
-                            label='Idade'
-                            name ='birthdate'
-                            setNewValue={setNaverData} 
-                            type='text'
-                            value={naverData.birthdate}
-                            key='2'
-                        />
-                        <InputElement 
-                            label='Projetos que participou'
-                            name='project'
-                            setNewValue={setNaverData} 
-                            type='text' 
-                            value={naverData.project}
-                            key='3'
-                        />
-                    </InputColumn>
-                    <InputColumn>
-                        <InputElement 
-                            label='Cargo'
-                            name='job_role'
-                            setNewValue={setNaverData} 
-                            type='text' 
-                            value={naverData.job_role}
-                            key='4'
-                        />
-                        <InputElement 
-                            label='Tempo de empresa'
-                            name='admission_date'
-                            setNewValue={setNaverData} 
-                            type='text' 
-                            value={naverData.admission_date}
-                            key='5'
-                        />
-                        <InputElement 
-                            label='URL da foto do Naver'
-                            name='url'
-                            setNewValue={setNaverData} 
-                            type='text' 
-                            value={naverData.url}
-                            key='6'
-                        />
-                    </InputColumn>
-                </FormInput>
-                <SaveButtonWrapper>
-                    <Button isFull={true} text='Salvar' onClickEffect={!isEditing ? addNewNaver : updateNaver} />
-                </SaveButtonWrapper>
-            </FormWrap>
-        </Wrapper>
+        <React.Fragment>
+            { isModalVisible &&
+                <React.Fragment>
+                    <Modal title={modalProps.title} message={modalProps.message} options={modalProps.options} closeModalHandler={closeModalHandler} />
+                    <BackDrop closeModalHandler={closeModalHandler} />
+                </React.Fragment>
+            }
+            <Wrapper>
+                <SectionHeader>
+                    <Link to='/navers-list' >
+                        <BackLink src={arrowIcon} />
+                    </Link>
+                    <SectionTitle>{!isEditing ? 'Adicionar Naver' : 'Editar Naver' }</SectionTitle>
+                </SectionHeader>
+                <FormWrap>
+                    <FormInput>
+                        <InputColumn>
+                            <InputElement 
+                                label='Nome'
+                                name='name'
+                                setNewValue={setNaverData} 
+                                type ='text'
+                                value={naverData.name}
+                                key='1'
+                            />
+                            <InputElement 
+                                label='Idade'
+                                name ='birthdate'
+                                setNewValue={setNaverData} 
+                                type='text'
+                                value={naverData.birthdate}
+                                key='2'
+                            />
+                            <InputElement 
+                                label='Projetos que participou'
+                                name='project'
+                                setNewValue={setNaverData} 
+                                type='text' 
+                                value={naverData.project}
+                                key='3'
+                            />
+                        </InputColumn>
+                        <InputColumn>
+                            <InputElement 
+                                label='Cargo'
+                                name='job_role'
+                                setNewValue={setNaverData} 
+                                type='text' 
+                                value={naverData.job_role}
+                                key='4'
+                            />
+                            <InputElement 
+                                label='Tempo de empresa'
+                                name='admission_date'
+                                setNewValue={setNaverData} 
+                                type='text' 
+                                value={naverData.admission_date}
+                                key='5'
+                            />
+                            <InputElement 
+                                label='URL da foto do Naver'
+                                name='url'
+                                setNewValue={setNaverData} 
+                                type='text' 
+                                value={naverData.url}
+                                key='6'
+                            />
+                        </InputColumn>
+                    </FormInput>
+                    <SaveButtonWrapper>
+                        <Button isFull={true} text='Salvar' onClickEffect={!isEditing ? addNewNaver : updateNaver} />
+                    </SaveButtonWrapper>
+                </FormWrap>
+            </Wrapper>
+        </React.Fragment>
     )
 }
 
